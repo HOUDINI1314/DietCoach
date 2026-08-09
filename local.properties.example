@@ -1,0 +1,3 @@
+## Copy to local.properties (never commit the real file)
+sdk.dir=C\:\\code\\tools\\android-sdk
+DASHSCOPE_API_KEY=YOUR_DASHSCOPE_KEY_HERE

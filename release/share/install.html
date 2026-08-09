@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description" content="DietCoach 安卓安装页" />
+  <title>安装 DietCoach</title>
+  <style>
+    :root {
+      --ink: #14201a;
+      --muted: #5c6f66;
+      --accent: #1b4332;
+      --accent2: #2d6a4f;
+      --line: #d7e3db;
+      --bg: #f4f7f4;
+      --danger: #9b2226;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1000px 520px at 8% -8%, #d8f3dc 0%, transparent 55%),
+        radial-gradient(800px 420px at 100% 0%, #b7e4c7 0%, transparent 45%),
+        var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      width: min(460px, 100%);
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 28px 22px 20px;
+      box-shadow: 0 16px 40px rgba(27, 67, 50, 0.08);
+    }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    p { margin: 0 0 14px; color: var(--muted); line-height: 1.6; font-size: 15px; }
+    .btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 14px;
+      padding: 15px 16px;
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      border: 0;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+    }
+    .btn-secondary {
+      background: #eef5f0;
+      color: var(--accent);
+      border: 1px solid var(--line);
+      font-weight: 600;
+    }
+    .tips {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #f3faf5;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    .tips strong { color: var(--ink); }
+    .warn {
+      display: none;
+      margin-top: 12px;
+      color: var(--danger);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .warn.show { display: block; }
+    .meta { margin-top: 12px; font-size: 12px; color: var(--muted); word-break: break-all; }
+    .status {
+      margin: 0 0 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #eef5f0;
+      color: var(--accent);
+      font-size: 14px;
+      line-height: 1.5;
+      display: none;
+    }
+    .status.show { display: block; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>DietCoach</h1>
+    <p>将尽量自动唤起系统安装界面。安卓出于安全限制，通常仍需你点一次「安装 / 继续」。</p>
+    <p class="status" id="status">正在跳转下载并尝试打开安装器…</p>
+
+    <a class="btn btn-primary" id="installBtn" href="__APK_URL__">立即下载并安装</a>
+    <button class="btn btn-secondary" id="jumpBtn" type="button">再试一次：下载 + 打开安装</button>
+
+    <div class="tips">
+      <strong>若未自动弹出安装</strong><br />
+      1. 下拉通知栏，点刚下好的 DietCoach.apk<br />
+      2. 允许「浏览器」安装未知应用<br />
+      3. OriginOS 安全提示选「继续安装」
+    </div>
+
+    <p class="warn" id="wechatWarn">检测到微信内置浏览器，无法自动安装。请点右上角 ··· →「在浏览器打开」，再回来点按钮。</p>
+    <p class="meta" id="meta"></p>
+  </main>
+
+  <script>
+    (function () {
+      var APK_URL = "__APK_URL__";
+      var ua = navigator.userAgent.toLowerCase();
+      var inWeChat = ua.indexOf("micromessenger") !== -1;
+      var inQQ = ua.indexOf("qq/") !== -1 && ua.indexOf("mqqbrowser") === -1;
+      var isAndroid = ua.indexOf("android") !== -1;
+
+      var btn = document.getElementById("installBtn");
+      var jump = document.getElementById("jumpBtn");
+      var warn = document.getElementById("wechatWarn");
+      var meta = document.getElementById("meta");
+      var status = document.getElementById("status");
+
+      btn.href = APK_URL;
+      meta.textContent = "安装包：" + APK_URL;
+
+      if (inWeChat || inQQ) {
+        warn.classList.add("show");
+      }
+
+      function buildIntentUrl(apkUrl) {
+        try {
+          var u = new URL(apkUrl);
+          return (
+            "intent://" +
+            u.host +
+            u.pathname +
+            u.search +
+            "#Intent;scheme=" +
+            u.protocol.replace(":", "") +
+            ";action=android.intent.action.VIEW" +
+            ";type=application/vnd.android.package-archive" +
+            ";S.browser_fallback_url=" +
+            encodeURIComponent(apkUrl) +
+            ";end"
+          );
+        } catch (e) {
+          return apkUrl;
+        }
+      }
+
+      function goInstall() {
+        if (inWeChat || inQQ) {
+          warn.classList.add("show");
+          alert("请先用系统浏览器打开本页（右上角··· → 在浏览器打开），再点安装。");
+          return;
+        }
+        status.classList.add("show");
+        status.textContent = "正在跳转下载并尝试打开安装器…";
+
+        if (isAndroid) {
+          // 1) 先走 Intent，尽量直接进安装界面
+          var intentUrl = buildIntentUrl(APK_URL);
+          window.location.href = intentUrl;
+          // 2) 若系统未接住 Intent，稍后回退为直接打开 APK（触发下载/安装提示）
+          setTimeout(function () {
+            status.textContent = "若未弹出安装，正在打开 APK 下载…下载完成后请点通知栏安装。";
+            window.location.href = APK_URL;
+          }, 1200);
+        } else {
+          window.location.href = APK_URL;
+        }
+      }
+
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        goInstall();
+      });
+      jump.addEventListener("click", goInstall);
+
+      // 非微信：进页后自动尝试下载+安装
+      if (!inWeChat && !inQQ) {
+        setTimeout(goInstall, 600);
+      }
+    })();
+  </script>
+</body>
+</html>

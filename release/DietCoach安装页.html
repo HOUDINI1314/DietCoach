@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description" content="DietCoach 安卓安装页" />
+  <title>安装 DietCoach</title>
+  <style>
+    :root {
+      --ink: #14201a;
+      --muted: #5c6f66;
+      --accent: #1b4332;
+      --accent2: #2d6a4f;
+      --line: #d7e3db;
+      --bg: #f4f7f4;
+      --danger: #9b2226;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1000px 520px at 8% -8%, #d8f3dc 0%, transparent 55%),
+        radial-gradient(800px 420px at 100% 0%, #b7e4c7 0%, transparent 45%),
+        var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      width: min(460px, 100%);
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 28px 22px 20px;
+      box-shadow: 0 16px 40px rgba(27, 67, 50, 0.08);
+    }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    p { margin: 0 0 14px; color: var(--muted); line-height: 1.6; font-size: 15px; }
+    .btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 14px;
+      padding: 15px 16px;
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      border: 0;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+    }
+    .btn-secondary {
+      background: #eef5f0;
+      color: var(--accent);
+      border: 1px solid var(--line);
+      font-weight: 600;
+    }
+    .tips {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #f3faf5;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    .tips strong { color: var(--ink); }
+    .warn {
+      display: none;
+      margin-top: 12px;
+      color: var(--danger);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .warn.show { display: block; }
+    .meta { margin-top: 12px; font-size: 12px; color: var(--muted); word-break: break-all; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>DietCoach</h1>
+    <p>饮食 · 训练 · 体重日历。点击下方按钮下载安装包；若在微信里打开，请先用系统浏览器打开本页。</p>
+
+    <a class="btn btn-primary" id="installBtn" href="https://litter.catbox.moe/2wynnd.apk">立即下载安装</a>
+    <button class="btn btn-secondary" id="jumpBtn" type="button">一键跳转下载</button>
+
+    <div class="tips">
+      <strong>安装说明（vivo / OriginOS）</strong><br />
+      1. 下载完成后点开 DietCoach.apk<br />
+      2. 设置 → 允许「浏览器」安装未知应用<br />
+      3. 安全提示里选择「继续安装」
+    </div>
+
+    <p class="warn" id="wechatWarn">检测到微信内置浏览器，通常无法直接装 APK。请点右上角 ··· →「在浏览器打开」，再点下载。</p>
+    <p class="meta" id="meta"></p>
+  </main>
+
+  <script>
+    (function () {
+      // 公网 APK 地址（上传后自动写入）
+      var APK_URL = "https://litter.catbox.moe/2wynnd.apk";
+      var ua = navigator.userAgent.toLowerCase();
+      var inWeChat = ua.indexOf("micromessenger") !== -1;
+      var inQQ = ua.indexOf("qq/") !== -1 && ua.indexOf("mqqbrowser") === -1;
+
+      var btn = document.getElementById("installBtn");
+      var jump = document.getElementById("jumpBtn");
+      var warn = document.getElementById("wechatWarn");
+      var meta = document.getElementById("meta");
+
+      btn.href = APK_URL;
+      meta.textContent = "安装包：" + APK_URL;
+
+      if (inWeChat || inQQ) {
+        warn.classList.add("show");
+      }
+
+      function goDownload() {
+        if (inWeChat || inQQ) {
+          warn.classList.add("show");
+          alert("请先用系统浏览器打开本页（右上角··· → 在浏览器打开），再下载安装。");
+          return;
+        }
+        // 跳转下载；安卓浏览器通常会进入下载管理，完成后可点开安装
+        window.location.href = APK_URL;
+      }
+
+      jump.addEventListener("click", goDownload);
+
+      // 非微信环境：进入页面约 0.8s 后自动跳转下载（可关掉自动跳）
+      var AUTO_JUMP = true;
+      if (AUTO_JUMP && !inWeChat && !inQQ) {
+        setTimeout(goDownload, 800);
+      }
+    })();
+  </script>
+</body>
+</html>

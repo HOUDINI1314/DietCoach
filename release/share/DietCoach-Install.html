@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description" content="DietCoach 瀹夊崜瀹夎椤? />
+  <title>瀹夎 DietCoach</title>
+  <style>
+    :root {
+      --ink: #14201a;
+      --muted: #5c6f66;
+      --accent: #1b4332;
+      --accent2: #2d6a4f;
+      --line: #d7e3db;
+      --bg: #f4f7f4;
+      --danger: #9b2226;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1000px 520px at 8% -8%, #d8f3dc 0%, transparent 55%),
+        radial-gradient(800px 420px at 100% 0%, #b7e4c7 0%, transparent 45%),
+        var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      width: min(460px, 100%);
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 28px 22px 20px;
+      box-shadow: 0 16px 40px rgba(27, 67, 50, 0.08);
+    }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    p { margin: 0 0 14px; color: var(--muted); line-height: 1.6; font-size: 15px; }
+    .btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 14px;
+      padding: 15px 16px;
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      border: 0;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+    }
+    .btn-secondary {
+      background: #eef5f0;
+      color: var(--accent);
+      border: 1px solid var(--line);
+      font-weight: 600;
+    }
+    .tips {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #f3faf5;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    .tips strong { color: var(--ink); }
+    .warn {
+      display: none;
+      margin-top: 12px;
+      color: var(--danger);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .warn.show { display: block; }
+    .meta { margin-top: 12px; font-size: 12px; color: var(--muted); word-break: break-all; }
+    .status {
+      margin: 0 0 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #eef5f0;
+      color: var(--accent);
+      font-size: 14px;
+      line-height: 1.5;
+      display: none;
+    }
+    .status.show { display: block; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>DietCoach</h1>
+    <p>灏嗗敖閲忚嚜鍔ㄥ敜璧风郴缁熷畨瑁呯晫闈€傚畨鍗撳嚭浜庡畨鍏ㄩ檺鍒讹紝閫氬父浠嶉渶浣犵偣涓€娆°€屽畨瑁?/ 缁х画銆嶃€?/p>
+    <p class="status" id="status">姝ｅ湪璺宠浆涓嬭浇骞跺皾璇曟墦寮€瀹夎鍣ㄢ€?/p>
+
+    <a class="btn btn-primary" id="installBtn" href="https://litter.catbox.moe/h2ue6j.apk">绔嬪嵆涓嬭浇骞跺畨瑁?/a>
+    <button class="btn btn-secondary" id="jumpBtn" type="button">鍐嶈瘯涓€娆★細涓嬭浇 + 鎵撳紑瀹夎</button>
+
+    <div class="tips">
+      <strong>鑻ユ湭鑷姩寮瑰嚭瀹夎</strong><br />
+      1. 涓嬫媺閫氱煡鏍忥紝鐐瑰垰涓嬪ソ鐨?DietCoach.apk<br />
+      2. 鍏佽銆屾祻瑙堝櫒銆嶅畨瑁呮湭鐭ュ簲鐢?br />
+      3. OriginOS 瀹夊叏鎻愮ず閫夈€岀户缁畨瑁呫€?    </div>
+
+    <p class="warn" id="wechatWarn">妫€娴嬪埌寰俊鍐呯疆娴忚鍣紝鏃犳硶鑷姩瀹夎銆傝鐐瑰彸涓婅 路路路 鈫掋€屽湪娴忚鍣ㄦ墦寮€銆嶏紝鍐嶅洖鏉ョ偣鎸夐挳銆?/p>
+    <p class="meta" id="meta"></p>
+  </main>
+
+  <script>
+    (function () {
+      var APK_URL = "https://litter.catbox.moe/h2ue6j.apk";
+      var ua = navigator.userAgent.toLowerCase();
+      var inWeChat = ua.indexOf("micromessenger") !== -1;
+      var inQQ = ua.indexOf("qq/") !== -1 && ua.indexOf("mqqbrowser") === -1;
+      var isAndroid = ua.indexOf("android") !== -1;
+
+      var btn = document.getElementById("installBtn");
+      var jump = document.getElementById("jumpBtn");
+      var warn = document.getElementById("wechatWarn");
+      var meta = document.getElementById("meta");
+      var status = document.getElementById("status");
+
+      btn.href = APK_URL;
+      meta.textContent = "瀹夎鍖咃細" + APK_URL;
+
+      if (inWeChat || inQQ) {
+        warn.classList.add("show");
+      }
+
+      function buildIntentUrl(apkUrl) {
+        try {
+          var u = new URL(apkUrl);
+          return (
+            "intent://" +
+            u.host +
+            u.pathname +
+            u.search +
+            "#Intent;scheme=" +
+            u.protocol.replace(":", "") +
+            ";action=android.intent.action.VIEW" +
+            ";type=application/vnd.android.package-archive" +
+            ";S.browser_fallback_url=" +
+            encodeURIComponent(apkUrl) +
+            ";end"
+          );
+        } catch (e) {
+          return apkUrl;
+        }
+      }
+
+      function goInstall() {
+        if (inWeChat || inQQ) {
+          warn.classList.add("show");
+          alert("璇峰厛鐢ㄧ郴缁熸祻瑙堝櫒鎵撳紑鏈〉锛堝彸涓婅路路路 鈫?鍦ㄦ祻瑙堝櫒鎵撳紑锛夛紝鍐嶇偣瀹夎銆?);
+          return;
+        }
+        status.classList.add("show");
+        status.textContent = "姝ｅ湪璺宠浆涓嬭浇骞跺皾璇曟墦寮€瀹夎鍣ㄢ€?;
+
+        if (isAndroid) {
+          // 1) 鍏堣蛋 Intent锛屽敖閲忕洿鎺ヨ繘瀹夎鐣岄潰
+          var intentUrl = buildIntentUrl(APK_URL);
+          window.location.href = intentUrl;
+          // 2) 鑻ョ郴缁熸湭鎺ヤ綇 Intent锛岀◢鍚庡洖閫€涓虹洿鎺ユ墦寮€ APK锛堣Е鍙戜笅杞?瀹夎鎻愮ず锛?          setTimeout(function () {
+            status.textContent = "鑻ユ湭寮瑰嚭瀹夎锛屾鍦ㄦ墦寮€ APK 涓嬭浇鈥︿笅杞藉畬鎴愬悗璇风偣閫氱煡鏍忓畨瑁呫€?;
+            window.location.href = APK_URL;
+          }, 1200);
+        } else {
+          window.location.href = APK_URL;
+        }
+      }
+
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        goInstall();
+      });
+      jump.addEventListener("click", goInstall);
+
+      // 闈炲井淇★細杩涢〉鍚庤嚜鍔ㄥ皾璇曚笅杞?瀹夎
+      if (!inWeChat && !inQQ) {
+        setTimeout(goInstall, 600);
+      }
+    })();
+  </script>
+</body>
+</html>
