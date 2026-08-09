@@ -21,6 +21,26 @@
 
 （不乘活动系数；活动水平仅供参考 / AI）
 
+## 使用示例
+
+| 今日 | 记录 |
+|:---:|:---:|
+| ![今日：热量缺口与三大营养素](docs/screenshots/01-today.jpg) | ![记录：一句话记餐 / 拍照识餐](docs/screenshots/02-record.jpg) |
+
+| 日历 | 力量 |
+|:---:|:---:|
+| ![日历：体重与活动点](docs/screenshots/03-calendar.jpg) | ![力量：类型 / 动作 / 组次负荷](docs/screenshots/04-strength.jpg) |
+
+| 我的 |
+|:---:|
+| ![我的：画像、称重与 API Key](docs/screenshots/05-profile.jpg) |
+
+- **今日**：查看 BMR 基底缺口、摄入进度与三大营养素；下方汇总当日饮食 / 有氧 / 力量。
+- **记录**：文字描述交给 AI 解析入库，或相册 / 拍照识餐；也可手动添加饮食与有氧。
+- **日历**：格子显示体重，有记录的日期带绿点；点日期进入当天详情。
+- **力量**：选训练类型与动作，填写组数 / 次数 / 负荷（与可选时长），可 AI 估消耗并入库。
+- **我的**：维护画像与今日称重，配置 DashScope API Key（加密存储）与记餐模型。
+
 ## 环境要求
 
 - JDK 17
@@ -54,8 +74,6 @@ adb install -r app\build\outputs\apk\debug\app-debug.apk
 分享给他人的安装包请使用**不含** `DASHSCOPE_API_KEY` 的构建；对方在「我的」自行填写 Key。
 
 微信传安装包请发 zip（微信常拦截直接打开 `.apk`）。
-
-## 使用示例
 
 ## 许可证
 
