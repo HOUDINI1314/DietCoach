@@ -55,6 +55,8 @@ adb install -r app\build\outputs\apk\debug\app-debug.apk
 
 微信传安装包请发 zip（微信常拦截直接打开 `.apk`）。
 
+## 使用示例
+
 ## 许可证
 
 私人项目；未另行声明前请勿二次分发你的 API Key。
