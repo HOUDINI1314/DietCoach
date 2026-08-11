@@ -25,15 +25,15 @@
 
 | 今日 | 记录 |
 |:---:|:---:|
-| ![今日：热量缺口与三大营养素](docs/screenshots/01-today.jpg) | ![记录：一句话记餐 / 拍照识餐](docs/screenshots/02-record.jpg) |
+| ![今日：热量缺口与三大营养素](docs/screenshots/daily_record.jpg) | ![记录：一句话记餐 / 拍照识餐](docs/screenshots/one_sentence_recording.jpg) |
 
 | 日历 | 力量 |
 |:---:|:---:|
 | ![日历：体重与活动点](docs/screenshots/03-calendar.jpg) | ![力量：类型 / 动作 / 组次负荷](docs/screenshots/04-strength.jpg) |
 
-| 我的 |
-|:---:|
-| ![我的：画像、称重与 API Key](docs/screenshots/05-profile.jpg) |
+| 我的 | AI助手|
+|:---:|:---:|
+| ![我的：画像、称重与 API Key](docs/screenshots/05-profile.jpg) | ![AI助手：可以针对数据库内容个性化提问](docs/screenshots/qwen_assistant.jpg) 
 
 - **今日**：查看 BMR 基底缺口、摄入进度与三大营养素；下方汇总当日饮食 / 有氧 / 力量。
 - **记录**：文字描述交给 AI 解析入库，或相册 / 拍照识餐；也可手动添加饮食与有氧。
